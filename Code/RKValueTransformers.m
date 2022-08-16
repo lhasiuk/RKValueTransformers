@@ -311,7 +311,10 @@ static BOOL RKVTClassIsCollection(Class aClass)
         if ([inputValue isKindOfClass:[NSData class]]) {
             id unarchivedValue = nil;
             @try {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
                 unarchivedValue = [NSKeyedUnarchiver unarchiveObjectWithData:inputValue];
+#pragma clang diagnostic pop
             }
             @catch (NSException *exception) {
                 NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"An `%@` exception was encountered while attempting to unarchive the given inputValue.", [exception name]], @"exception": exception };
@@ -326,7 +329,10 @@ static BOOL RKVTClassIsCollection(Class aClass)
             *outputValue = unarchivedValue;
         } else if ([inputValue conformsToProtocol:@protocol(NSCoding)]) {
             RKValueTransformerTestOutputValueClassIsSubclassOfClass(outputValueClass, [NSData class], error);
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
             *outputValue = [NSKeyedArchiver archivedDataWithRootObject:inputValue];
+#pragma clang diagnostic pop
         } else {
             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Expected an `inputValue` of type `NSData` or conforming to `NSCoding`, but got a `%@` which does not satisfy these expectation.", [inputValue class]] };
             if (error) *error = [NSError errorWithDomain:RKValueTransformersErrorDomain code:RKValueTransformationErrorUntransformableInputValue userInfo:userInfo];
