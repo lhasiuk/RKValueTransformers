@@ -314,11 +314,11 @@ static BOOL RKVTClassIsCollection(Class aClass)
                 NSError *error = nil;
                 NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:inputValue error:&error];
                 if (error == nil) {
-                    unarchiver.requiringSecureCoding = NO;
+                    unarchiver.requiresSecureCoding = NO;
                     unarchivedValue = [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
                 }
                 else
-                    throw error;
+                    @throw error;
             }
             @catch (NSException *exception) {
                 NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"An `%@` exception was encountered while attempting to unarchive the given inputValue.", [exception name]], @"exception": exception };
