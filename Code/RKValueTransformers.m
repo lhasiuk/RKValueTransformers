@@ -311,10 +311,14 @@ static BOOL RKVTClassIsCollection(Class aClass)
         if ([inputValue isKindOfClass:[NSData class]]) {
             id unarchivedValue = nil;
             @try {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-                unarchivedValue = [NSKeyedUnarchiver unarchiveObjectWithData:inputValue];
-#pragma clang diagnostic pop
+                NSError *error = nil;
+                NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:inputValue error:&error];
+                if (error == nil) {
+                    unarchiver.requiringSecureCoding = NO;
+                    unarchivedValue = [unarchiver decodeObjectForKey:NSKeyedArchiveRootObjectKey];
+                }
+                else
+                    throw error;
             }
             @catch (NSException *exception) {
                 NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"An `%@` exception was encountered while attempting to unarchive the given inputValue.", [exception name]], @"exception": exception };
