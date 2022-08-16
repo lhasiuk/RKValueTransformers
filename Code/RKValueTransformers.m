@@ -329,10 +329,7 @@ static BOOL RKVTClassIsCollection(Class aClass)
             *outputValue = unarchivedValue;
         } else if ([inputValue conformsToProtocol:@protocol(NSCoding)]) {
             RKValueTransformerTestOutputValueClassIsSubclassOfClass(outputValueClass, [NSData class], error);
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-            *outputValue = [NSKeyedArchiver archivedDataWithRootObject:inputValue];
-#pragma clang diagnostic pop
+            *outputValue = [NSKeyedArchiver archivedDataWithRootObject:inputValue requiringSecureCoding:NO error:NULL];
         } else {
             NSDictionary *userInfo = @{ NSLocalizedDescriptionKey: [NSString stringWithFormat:@"Expected an `inputValue` of type `NSData` or conforming to `NSCoding`, but got a `%@` which does not satisfy these expectation.", [inputValue class]] };
             if (error) *error = [NSError errorWithDomain:RKValueTransformersErrorDomain code:RKValueTransformationErrorUntransformableInputValue userInfo:userInfo];
